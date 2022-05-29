@@ -29,8 +29,18 @@ bucket_acl_should_be_private = rule {
   acl_violators is empty
 }
 
+# Before the main rule!
+for tag_violators as name, bucket {
+  print(bucket.address, "tags:", keys(bucket.change.after.tags), "\n\trequired tags:", required_tags,"\n")
+}
+
+for acl_violators as name, bucket {
+  print(bucket.address, "acl:", bucket.change.after.acl, "\n\trequired acl:", "private","\n")
+}
+
 # Main rule that requires other rules to be true
 main = rule {
   bucket_should_have_required_tags and
   bucket_acl_should_be_private
 }
+
